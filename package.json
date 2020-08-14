@@ -1,0 +1,21 @@
+{
+  "name": "scraping-er",
+  "version": "1.0.0",
+  "description": "scraping for entre ríos website",
+  "main": "app.js",
+  "scripts": {
+    "parse": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Veronesi/scraping-er.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Veronesi/scraping-er/issues"
+  },
+  "homepage": "https://github.com/Veronesi/scraping-er#readme"
+}

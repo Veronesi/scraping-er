@@ -1,0 +1,17 @@
+node_modules
+build
+data
+public/images/products/*.png
+public/images/services/*.png
+.DS_Store
+
+db
+export
+
+docker-compose.yml
+
+node.dockerfile
+
+config/database.js
+
+package-lock.json
