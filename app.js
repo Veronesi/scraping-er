@@ -299,6 +299,31 @@ if (db.includes(process.argv[2])) {
             data = fs.readFileSync(`db/noticias.sql`, 'UTF-8');
             lines = data.split(/\n/);
 
+            // ------------ Galeria imagenes -------------
+            dataGaleriaImage = fs.readFileSync(`db/galeria_imagenes.sql`, 'UTF-8');
+            linesGaleriaImage = dataGaleriaImage.split(/\n/);
+
+            galeriaIamges = []
+
+            linesGaleriaImage.forEach(line => {
+                let match = regexr.galeria_imagenes.exec(line)
+                match ? galeriaIamges.push(match.groups) : false;
+            })
+            /////////////////////////////////////////////
+
+
+            // ------------ Noticias imagenes ------------
+            dataNoticiaImage = fs.readFileSync(`db/noticias_imagenes.sql`, 'UTF-8');
+            linesNoticiaImage = dataNoticiaImage.split(/\n/);
+
+            noticiaIamges = []
+
+            linesNoticiaImage.forEach(line => {
+                let match = regexr.noticias_imagenes.exec(line)
+                match ? noticiaIamges.push(match.groups) : false;
+            })
+            /////////////////////////////////////////////
+
             noticias = [];
 
 
@@ -307,6 +332,7 @@ if (db.includes(process.argv[2])) {
             lines.forEach((line, index) => {
                 let match = regexr['noticias'].exec(line)
                 match && match.groups.seccion_id == '7' ? noticias.push({
+                    old_id: match.groups.id,
                     id: index + 1,
                     ubicacion_id: match.groups.ubicacion_id,
                     descripcion: match.groups.bajada,
@@ -323,6 +349,25 @@ if (db.includes(process.argv[2])) {
                 let localidad = ubicacionesNew.find(e => e.oldId == noticia.ubicacion_id)
                 localidadType = localidad ? 'localidad' : 'ciudad';
                 localidad = localidad ? localidad : ciudadNew.find(e => e.oldId == noticia.ubicacion_id)
+
+                // ---------- Set images -------------
+                listaImagen = [];
+
+                listaImagen = noticiaIamges.filter(noticia_imagen =>
+                    noticia_imagen.noticiaId == noticia.old_id
+                ).map(noticia_imagen => {
+                    let image = galeriaIamges.find(e =>
+                        e.img_id == noticia_imagen.imgId
+                    )
+
+                    return {
+                        img_file: image.img_file,
+                        img_fecha: image.img_fecha + '000',
+                        orden: noticia_imagen.orden
+                    }
+                })
+                /////////////////////////////////////////////
+
                 return {
                     id: noticia.id,
                     ubicacion_id: localidad.id,
@@ -334,7 +379,8 @@ if (db.includes(process.argv[2])) {
                     telefono: '',
                     web: '',
                     email: '',
-                    activo: 0
+                    activo: 0,
+                    lista_imagen: listaImagen
                 }
             })
             fs.writeFileSync('export/Destino.json', JSON.stringify(noticias))
